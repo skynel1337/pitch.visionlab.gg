@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Vision Lab</title>
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+
+<style>
+*  { margin:0; padding:0; box-sizing:border-box }
+html, body { height:100%; background:#000; overflow:hidden }
+
+/* Прямой iframe — Hypermatic сам управляет letterbox, навигацией, свайпами */
+iframe {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+
+/* Портретный оверлей (только телефоны в портрете) */
+.rotate {
+  display: none;
+  position: fixed; inset: 0; z-index: 10;
+  background: #000;
+  flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+  font-family: "DM Sans", system-ui, sans-serif; text-align: center;
+  padding: 40px;
+}
+.rotate svg {
+  width: 56px; height: 56px;
+  fill: none; stroke: #ed6720; stroke-width: 1.5; stroke-linecap: round;
+  animation: tilt 3s ease-in-out infinite;
+}
+@keyframes tilt {
+  0%, 100% { transform: rotate(0deg) }
+  40%, 60% { transform: rotate(90deg) }
+}
+.rotate p { color: #ccc; font-size: 15px; line-height: 1.5; font-weight: 300 }
+.rotate strong { display: block; color: #fff; font-size: 20px; font-weight: 600; margin-bottom: 8px }
+
+@media (orientation: portrait) and (max-width: 820px) {
+  .rotate { display: flex }
+}
+</style>
+</head>
+<body>
+
+  <iframe
+    id="deck"
+    src="https://embed.pitchdeck.hypermatic.com/slides/mq10ez1ae0r0e/?token=MVVzdG9CMXlFMVdlJWI=&b=000000&f=000000&t=s&toolbar=hide"
+    title="Vision Lab"
+    allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+    allowfullscreen
+    referrerpolicy="strict-origin-when-cross-origin"></iframe>
+
+  <!-- Оверлей: повернуть телефон в альбомную ориентацию -->
+  <div class="rotate">
+    <svg viewBox="0 0 48 48">
+      <rect x="4" y="8" width="28" height="40" rx="3"/>
+      <path d="M38 6l8 8-8 8M46 14H30"/>
+    </svg>
+    <div>
+      <strong>Rotate your device</strong>
+      <p>This presentation is designed<br>for landscape viewing</p>
+    </div>
+  </div>
+
+  <script>
+    var f = document.getElementById('deck');
+
+    /* Авто-фокус при загрузке (десктоп) — стрелки работают без первого клика */
+    function tryFocus(){ try { f.focus(); } catch (_) {} }
+    window.addEventListener('load', function(){
+      tryFocus();
+      setTimeout(tryFocus, 600);
+      setTimeout(tryFocus, 1800);
+    });
+
+    /* Клик в любом месте страницы (вне iframe) — возвращает фокус на плеер.
+       Если стрелки стали перематывать видео — кликни в чёрную область. */
+    document.addEventListener('click', tryFocus);
+  </script>
+
+</body>
+</html>
