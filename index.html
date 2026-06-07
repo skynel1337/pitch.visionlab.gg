@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Vision Lab</title>
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+
+<style>
+*  { margin:0; padding:0; box-sizing:border-box }
+html,body { height:100%; background:#000; overflow:hidden }
+
+/* Плеер вписан в строгий 16:9 бокс */
+iframe {
+  position: fixed   !important;
+  left:     50%     !important;
+  top:      50%     !important;
+  transform: translate(-50%, -50%) !important;
+  width:    min(100vw, calc(100dvh * 16 / 9)) !important;
+  height:   min(100dvh, calc(100vw * 9 / 16)) !important;
+  border:   0       !important;
+  background: #000  !important;
+  cursor:   default !important;  /* над слайдом — обычный курсор */
+}
+</style>
+</head>
+<body>
+  <script
+    src="https://embed.pitchdeck.hypermatic.com/iframe.js"
+    data-embed-url="https://embed.pitchdeck.hypermatic.com/slides/mq10ez1ae0r0e/?token=MVVzdG9CMXlFMVdlJWI=&b=000000&f=000000&t=s&toolbar=hide"
+    data-title="Vision Lab"
+    data-favicons="true"
+  ></script>
+
+  <script>
+    var getFrame = function(){ return document.querySelector('iframe'); };
+
+    /* 1. Авто-фокус при загрузке */
+    new MutationObserver(function(_, obs) {
+      var f = getFrame();
+      if (f) { obs.disconnect(); window.focus(); f.focus(); }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+
+    /* 2. Попытка навигации через postMessage (Hypermatic слушает их для remote control).
+          Отправляем несколько форматов — один из них должен сработать. */
+    function navigate(dir) {
+      var f = getFrame(); if (!f) return;
+      f.focus(); // сначала возвращаем фокус (гарантированно работает)
+      var msgs = [
+        { type: 'navigate',  direction: dir       },
+        { action: dir                              },
+        { slide: dir                               },
+        { event: dir === 'next' ? 'nextSlide' : 'prevSlide' },
+        dir                                         // plain string
+      ];
+      msgs.forEach(function(m) {
+        try { f.contentWindow.postMessage(
+          typeof m === 'string' ? m : JSON.stringify(m), '*'
+        ); } catch (_) {}
+      });
+    }
+
+    /* 3. Клик по чёрным полосам:
+          левая половина экрана  → предыдущий слайд
+          правая половина экрана → следующий слайд
+          (клики внутри iframe до parent не долетают, поэтому
+           сюда приходят ТОЛЬКО клики по чёрным полосам) */
+    document.addEventListener('click', function(e) {
+      navigate(e.clientX < window.innerWidth / 2 ? 'prev' : 'next');
+    });
+
+    /* 4. Курсор ← / → на чёрных полосах */
+    document.addEventListener('mousemove', function(e) {
+      document.body.style.cursor =
+        e.clientX < window.innerWidth / 2 ? 'w-resize' : 'e-resize';
+    });
+  </script>
+</body>
+</html>
