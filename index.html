@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Vision Lab</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box }
+html, body { height:100%; background:#000; overflow:hidden }
+
+/* ── Десктоп: плеер ── */
+iframe { position:fixed; inset:0; width:100%; height:100%; border:0 }
+.wall  { display:none }
+
+/* ── Мобильные: заглушка, копия coming-soon страницы ── */
+@media (hover:none) and (pointer:coarse) {
+  iframe { display:none }
+  .wall  { display:flex }
+}
+
+.wall {
+  position: fixed; inset: 0;
+  background: #000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fade 1.1s ease both;
+}
+@keyframes fade { from{opacity:0} to{opacity:1} }
+
+.wall .logo {
+  width: min(48vmin, 460px);
+  height: min(48vmin, 460px);
+  object-fit: contain;
+  pointer-events: none;
+  display: block;
+}
+
+.wall .caption {
+  margin-top: clamp(24px, 5vmin, 52px);
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-weight: 300;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  /* немного меньше чем в coming-soon, чтобы влез текст в 2 строки */
+  font-size: clamp(11px, 2.1vmin, 16px);
+  color: #d6d6d6;
+  text-align: center;
+  line-height: 1.9;
+  padding-left: .28em;
+}
+
+.wall .dot {
+  opacity: 0;
+  animation: dot 1.8s infinite both;
+}
+.wall .dot:nth-child(1) { animation-delay: 0s   }
+.wall .dot:nth-child(2) { animation-delay: .28s }
+.wall .dot:nth-child(3) { animation-delay: .56s }
+@keyframes dot {
+  0%          { opacity: 0 }
+  18%         { opacity: 1 }
+  72%         { opacity: 1 }
+  90%, 100%   { opacity: 0 }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wall .dot { animation: none; opacity: 1 }
+}
+</style>
+</head>
+<body>
+
+  <!-- Десктоп: плеер Hypermatic -->
+  <iframe
+    id="f"
+    src="https://embed.pitchdeck.hypermatic.com/slides/mq10ez1ae0r0e/?token=MVVzdG9CMXlFMVdlJWI=&b=000000&f=000000&t=s&toolbar=hide"
+    allow="autoplay; fullscreen; encrypted-media"
+    allowfullscreen></iframe>
+
+  <!-- Мобильные: точная копия coming-soon страницы -->
+  <div class="wall">
+    <video class="logo" autoplay muted loop playsinline preload="auto" poster="media/logo-poster.jpg">
+      <source src="media/logo.mp4" type="video/mp4">
+    </video>
+    <div class="caption">
+      This presentation is<br>
+      desktop only<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+    </div>
+  </div>
+
+  <script>
+    var f = document.getElementById('f');
+    window.addEventListener('load', function(){ f.focus(); });
+    document.addEventListener('click', function(){ f.focus(); });
+  </script>
+
+</body>
+</html>
